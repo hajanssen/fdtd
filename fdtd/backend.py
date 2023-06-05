@@ -99,7 +99,7 @@ class NumpyBackend(Backend):
 
     float = numpy.float64
     """ floating type for array """
-    
+
     complex = numpy.complex128
     """ complex type for array """
 
@@ -204,11 +204,13 @@ if TORCH_AVAILABLE:
         float = torch.get_default_dtype()
         """ floating type for array """
 
-        if float is torch.float32:
-            complex = torch.complex64
-        else:
-            complex = torch.complex128
-        """ complex type for array """
+        def complex(real=None, imag=None):
+            if real is None:
+                real = torch.Tensor().type(float)
+            if imag is None:
+                imag = torch.zeros_like(real)
+            return torch.complex(real, imag)
+        """ typecast tensor to complex with identical behavior to numpy.compelx() """
 
         # methods
         asarray = staticmethod(torch.as_tensor)
